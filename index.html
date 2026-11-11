@@ -353,17 +353,7 @@ const SECTIONS=[
 {"id": "keamanan", "icon": "shield", "title": "09 · Secure Vibe Coding", "time": "±25 mnt", "intro": "Periksa kesalahan umum pada data pengguna, dependency, rahasia, dan kontrol akses. Uji hanya aplikasi latihan yang Anda miliki atau diizinkan.", "steps": [{"t": "Security review berdasarkan OWASP", "w": "ai", "code": "Audit proyek PawonBoga dengan fokus OWASP Top 10:2025 yang relevan untuk aplikasi statis: XSS, penggunaan innerHTML (pastikan semua data pengguna di-escape), penanganan URL, validasi impor JSON, dependency supply chain, kebocoran secret, dan konfigurasi publik. Bedakan temuan yang terbukti dari dugaan. Laporkan file/baris, tingkat risiko, dan rekomendasi.", "out": "Laporan temuan dan status verifikasi tersedia.", "prompt": 1}, {"t": "Uji XSS dengan input aman untuk lab", "w": "br", "p": "Di form nama produk, masukkan string berikut dan pastikan tampil sebagai teks, bukan dijalankan: <code class=\"i\">&lt;img src=x onerror=alert(1)&gt;</code>. Jangan uji situs publik tanpa izin.", "note": {"k": "warn", "h": "Pengujian berizin", "x": "Payload ini hanya digunakan pada instance lokal PawonBoga milik peserta untuk mengamati apakah input ditampilkan secara aman."}}, {"t": "Periksa dependencies dan secrets", "w": "term", "code": "npm audit\ngit status\ngit diff --check", "out": "Catat hasil aktual. Temuan perlu dianalisis, bukan diabaikan."}, {"t": "Remediasi dan retest", "w": "ai", "code": "Dari laporan audit keamanan PawonBoga, prioritaskan temuan yang terverifikasi. Usulkan patch terkecil dan test keamanan yang mereproduksi isu; jangan mengubah dependency besar tanpa persetujuan. Implementasikan hanya setelah rencana disetujui, lalu jalankan retest dan regression test.", "prompt": 1}, {"t": "Checklist pra-rilis", "w": "ed", "p": "Pastikan tidak ada token/API key, tidak ada data pelanggan nyata, build dan test dijalankan, link WhatsApp benar, halaman mobile baik, dan catatan keterbatasan localStorage dicantumkan."}]},
 {"id": "rilis", "icon": "rocket", "title": "10 · Deployment & launching", "time": "±25 mnt", "intro": "Pilih satu dari empat opsi hosting melalui pemilih di bawah. Dua tutorial utama dijelaskan penuh: GitHub Pages dan Vercel.", "steps": [{"t": "Persiapkan source code untuk deployment", "w": "term", "p": "Jalankan ulang pengujian dan build; pastikan tidak ada data rahasia dan repository telah di-push ke GitHub.", "code": "npm test\nnpm run build\ngit status\ngit add -A\ngit commit -m \"chore: persiapan rilis PawonBoga\"\ngit branch -M main\ngit remote -v\n# Jika belum ada remote: git remote add origin https://github.com/USERNAME/pawonboga.git\ngit push -u origin main", "out": "Repository tersedia di GitHub, build berhasil jika test environment memadai."}, {"t": "Pilih hosting publik/privat", "w": "ed", "p": "Empat opsi: GitHub Pages (statis), Netlify (statis), intranet (internal), dan Vercel (statis/frontend). Opsi yang dipilih mengubah langkah penjelasan berikut.", "table": {"h": ["Pilihan", "Karakteristik", "Keterbatasan"], "r": [["GitHub Pages", "Gratis untuk situs statis dari GitHub; workflow sudah tersedia di proyek", "Tidak menyediakan backend/auth server"], ["Netlify", "Deployment frontend dari repository Git", "Paket gratis memiliki batas penggunaan"], ["Intranet", "Server internal organisasi", "Perlu pengelolaan server dan izin"], ["Vercel", "Git integration dan preview deployment", "Paket Hobby memiliki kuota dan ketentuan penggunaan; cek kelayakan penggunaan komersial"]]}}, {"t": "Ikuti tutorial deploy sesuai hosting pilihan", "w": "ed", "p": "Pilih hosting pada bilah bawah; langkah, perintah dan tautan tutorial akan berganti otomatis.", "code": s=>HOSTS[s.host].guide, "out": "Akses URL publik/internal dan jalankan smoke test."}, {"t": "Verifikasi aplikasi yang sudah online", "w": "br", "p": "Buka URL hasil deployment, lakukan smoke test: katalog terlihat, filter bekerja, tombol WhatsApp benar, dashboard demo berfungsi, dan tidak ada klaim sebagai admin production."}, {"t": "Buat dokumentasi final", "w": "ai", "code": "Buat README.md final PawonBoga: deskripsi, fitur, cara menjalankan (npm install, npm run dev, npm test, npm run build), struktur folder, konfigurasi nomor WhatsApp di src/products.js, URL deployment, serta batasan localStorage tanpa autentikasi. Sertakan bagian \"Batasan dan langkah produksi berikutnya\".", "out": "README lengkap dan sesuai kondisi aplikasi.", "prompt": 1}]},
 {"id": "troubleshooting", "icon": "help", "title": "11 · Troubleshooting", "time": "Referensi", "intro": "Penanganan masalah umum dan langkah pemulihan tanpa merusak kode.","details":[["Perintah AI tidak ditemukan","<p>Tutup dan buka kembali terminal; pastikan npm global bin ada di PATH. Periksa: <code class=\"i\">npm config get prefix</code>.</p>"],["Port Vite sudah dipakai","<p>Jalankan <code class=\"i\">npm run dev -- --port 5174</code> lalu buka alamat yang ditampilkan.</p>"],["Perintah git tidak dikenali setelah instalasi","<p>Terminal lama belum memuat PATH baru. Tutup dan buka kembali terminal atau VS Code. Jika masih gagal, muat ulang PATH dengan <code class=\"i\">$env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')</code>, atau gunakan path lengkap <code class=\"i\">C:\\Program Files\\Git\\cmd\\git.exe</code>. Verifikasi dengan <code class=\"i\">git --version</code>.</p>"],["Aplikasi putih setelah GitHub Pages deploy","<p>Pastikan <code class=\"i\">vite.config.js</code> memakai <code class=\"i\">base: './'</code> (default PawonBoga), buka tab Actions untuk memastikan workflow sukses, lalu periksa Console/Network di DevTools.</p>"],["Workflow gagal di configure-pages","<p>Aktifkan Settings &gt; Pages &gt; Build and deployment &gt; Source: <b>GitHub Actions</b>, kemudian buka tab Actions dan klik <b>Re-run all jobs</b>.</p>"],["Git push ditolak (fetch first)","<p>Jalankan <code class=\"i\">git pull --rebase origin main</code> setelah commit lokal disimpan, selesaikan konflik, lalu <code class=\"i\">git push</code>. Jangan force push tanpa memahami dampak.</p>"],["Vercel build gagal","<p>Periksa Root Directory, <code class=\"i\">npm run build</code>, folder <code class=\"i\">dist</code>, versi Node.js, dan log deployment.</p>"],["AI mengubah banyak file tanpa izin","<p>Jalankan <code class=\"i\">git diff</code>, periksa perubahan, dan gunakan <code class=\"i\">git restore</code> hanya untuk file yang dipastikan aman dibatalkan.</p>"],["LocalStorage tidak menyimpan perubahan","<p>Periksa DevTools Storage, validasi JSON, mode privat/incognito, dan error console. Key yang dipakai: <code class=\"i\">pawonboga:products:v1</code>.</p>"]]},
-{"id": "rubrik", "icon": "award", "title": "12 · Rubrik penilaian output training", "time": "±10 mnt", "intro": "Instruktur memberikan skor 0–100 pada setiap kriteria. Nilai akhir otomatis dihitung sesuai bobot; hasil bisa disalin sebagai ringkasan penilaian.", "rubric": true, "blocks": [{"note": {"k": "tip", "h": "Prinsip penilaian", "x": "Nilai harus berdasarkan demonstrasi, source code, test evidence, dan URL yang benar-benar dapat diperiksa. Keamanan tidak dinilai hanya dari klaim AI agent."}}]}
-];
-
-const CRITERIA=[
- ['UI/UX & responsivitas',20,'Tampilan konsisten, mudah digunakan, mobile-friendly, kontras dan umpan balik'],
- ['Fitur katalog & dashboard',25,'Katalog 8 produk, pencarian, filter, sorting, WhatsApp, dashboard CRUD, statistik, persistensi'],
- ['Pengujian fungsi',15,'Test case manual, unit test, bukti hasil, penanganan input negatif'],
- ['Pengujian keamanan',15,'XSS, escape data, validasi impor, npm audit, secret check, batasan dashboard lokal dipahami'],
- ['Prompt & proses iteratif',10,'SPEC.md, TASKS.md, prompt terukur, review git diff dan commit'],
- ['Deployment & dokumentasi',10,'URL aktif, build sukses, README, catatan keterbatasan'],
- ['Presentasi & refleksi',5,'Demo langsung, penjelasan desain, bukti, dan perbaikan']
+{"id": "rubrik", "icon": "award", "title": "12 · Rubrik penilaian output training", "time": "±10 mnt", "intro": "Berikut aspek yang dinilai instruktur beserta bobotnya. Peserta tidak perlu mengisi skor — penilaian dan penghitungan nilai akhir sepenuhnya dilakukan oleh instruktur berdasarkan demonstrasi, source code, dan bukti yang dapat diperiksa.", "blocks": [{"note": {"k": "tip", "h": "Prinsip penilaian", "x": "Nilai harus berdasarkan demonstrasi, source code, test evidence, dan URL yang benar-benar dapat diperiksa. Keamanan tidak dinilai hanya dari klaim AI agent."}}, {"table": {"h": ["Aspek yang dinilai", "Bobot", "Deskripsi"], "r": [["UI/UX & responsivitas", "20%", "Tampilan konsisten, mudah digunakan, mobile-friendly, kontras dan umpan balik"], ["Fitur katalog & dashboard", "25%", "Katalog 8 produk, pencarian, filter, sorting, WhatsApp, dashboard CRUD, statistik, persistensi"], ["Pengujian fungsi", "15%", "Test case manual, unit test, bukti hasil, penanganan input negatif"], ["Pengujian keamanan", "15%", "XSS, escape data, validasi impor, npm audit, secret check, batasan dashboard lokal dipahami"], ["Prompt & proses iteratif", "10%", "SPEC.md, TASKS.md, prompt terukur, review git diff dan commit"], ["Deployment & dokumentasi", "10%", "URL aktif, build sukses, README, catatan keterbatasan"], ["Presentasi & refleksi", "5%", "Demo langsung, penjelasan desain, bukti, dan perbaikan"]]}}]}
 ];
 /* ---------- Helper ---------- */
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
@@ -393,26 +383,6 @@ try{
 }catch(e){}
 const WH={term:['Terminal',''],ai:['Di dalam tool AI','ai'],br:['Browser','br'],ed:['Editor','ed']};
 
-/* ---------- Rubrik ---------- */
-let scores=CRITERIA.map(()=>0);
-try{
-  const v=JSON.parse(lsGet('pawonboga-rubric-scores')||'[]');
-  if(Array.isArray(v)&&v.length===CRITERIA.length)scores=v.map(x=>Math.max(0,Math.min(100,Number(x)||0)));
-}catch(e){}
-function rubricHTML(){
-  return '<div class="rubric-box"><h3>Penilaian Capstone PawonBoga</h3><p>Masukkan skor 0–100 per aspek; nilai akhir dihitung berdasarkan bobot, bukan rata-rata sederhana.</p>'
-    +CRITERIA.map((r,i)=>'<div class="rubric-row"><div><b>'+r[0]+'</b> <small>Bobot '+r[1]+'%</small><p>'+r[2]+'</p></div><label>Skor <input type="number" class="rubric-input" data-ri="'+i+'" min="0" max="100" step="5" value="'+scores[i]+'" aria-label="Skor '+r[0]+'"></label></div>').join('')
-    +'<div class="rubric-result"><span>Nilai akhir</span><strong id="rubricTotal">0/100</strong><span id="rubricGrade"></span></div>'
-    +'<button class="rubric-copy" type="button" id="rubricCopy">Salin hasil penilaian</button>'
-    +'<button class="rubric-copy" type="button" id="rubricReset">Reset skor</button></div>';
-}
-function updateRubric(){
-  const el=document.getElementById('rubricTotal');
-  if(!el)return;
-  const total=CRITERIA.reduce((sum,r,i)=>sum+r[1]*scores[i]/100,0);
-  el.textContent=total.toFixed(1)+'/100';
-  document.getElementById('rubricGrade').textContent=total>=85?'Sangat Baik':total>=70?'Baik':total>=60?'Cukup':'Perlu Perbaikan';
-}
 function hostExtraHTML(){
   let html='<div class="note info"><strong>Hosting yang dipilih: '+HOSTS[st.host].name+'</strong><p>Gunakan petunjuk di atas, lalu verifikasi URL yang dihasilkan. Opsi hosting ini tidak otomatis menyediakan autentikasi backend.</p></div>';
   if(st.host==='github'){
@@ -452,13 +422,11 @@ function render(){
       if(s.note)html+='<div class="row"><span class="lab">Catatan</span><div class="val">'+noteHTML(s.note)+'</div></div>';
       html+='</article>';
     });
-    if(sec.rubric)html+=rubricHTML();
     (sec.details||[]).forEach(d=>{html+='<details><summary>'+d[0]+'</summary><div class="val">'+d[1]+'</div></details>'});
     html+='</section>';
   });
   document.getElementById('main').innerHTML=html;
   paint();
-  updateRubric();
 }
 function paint(){
   let first=null;
@@ -480,14 +448,6 @@ document.getElementById('flow').innerHTML=flowHTML(['Setup','PRD UMKM','Katalog'
 document.getElementById('toc').innerHTML=SECTIONS.map((s,i)=>'<a href="#'+s.id+'" data-s="'+s.id+'">'+ico(s.icon)+'<b>'+(i+1)+'</b><span>'+s.title+'</span></a>').join('');
 
 /* events */
-document.getElementById('main').addEventListener('input',e=>{
-  const input=e.target.closest('.rubric-input');
-  if(!input)return;
-  const i=Number(input.dataset.ri);
-  scores[i]=Math.max(0,Math.min(100,Number(input.value)||0));
-  lsSet('pawonboga-rubric-scores',JSON.stringify(scores));
-  updateRubric();
-});
 document.getElementById('main').addEventListener('click',async e=>{
   const ck=e.target.closest('.ck');
   if(ck){
@@ -495,13 +455,6 @@ document.getElementById('main').addEventListener('click',async e=>{
     done.has(id)?done.delete(id):done.add(id);
     lsSet('pawonboga-lab-done',JSON.stringify([...done]));
     paint();
-    return;
-  }
-  if(e.target.id==='rubricReset'){scores=CRITERIA.map(()=>0);lsSet('pawonboga-rubric-scores',JSON.stringify(scores));render();return;}
-  if(e.target.id==='rubricCopy'){
-    const t=CRITERIA.reduce((sum,r,i)=>sum+r[1]*scores[i]/100,0);
-    const report='Penilaian PawonBoga\n'+CRITERIA.map((r,i)=>r[0]+' ('+r[1]+'%): '+scores[i]+'/100').join('\n')+'\nTOTAL: '+t.toFixed(1)+'/100';
-    navigator.clipboard?.writeText(report).then(()=>e.target.textContent='Tersalin').catch(()=>prompt('Salin hasil:',report));
     return;
   }
   const cp=e.target.closest('.copy');
